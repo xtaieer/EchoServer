@@ -11,44 +11,42 @@ import java.util.List;
 
 public class EchoClient {
     private static final int PORT = 11880;
+
     public static void main(String[] args) {
         Socket socket = null;
         try {
-            socket = new Socket((String)null, PORT);
+            socket = new Socket((String) null, PORT);
             InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = new BufferedOutputStream(socket.getOutputStream());
             List<Byte> bytes = new ArrayList<Byte>();
             int r;
-            for(;;) {
+            for (;;) {
                 bytes.clear();
                 while ((r = System.in.read()) != '\n') {
                     outputStream.write(r);
                 }
-                outputStream.write('&');
+                outputStream.write(r);
                 outputStream.flush();
                 bytes.clear();
-                while (inputStream.available() > 0) {
-                    bytes.add((byte) inputStream.read());
+                while ((r = inputStream.read()) != '\n') {
+                    bytes.add((byte) r);
                 }
+                bytes.add((byte) r);
                 byte[] bs = new byte[bytes.size()];
                 for (int i = 0; i < bytes.size(); i++) {
                     bs[i] = bytes.get(i);
                 }
                 System.out.println("echo clint " + new String(bs));
             }
-        }
-        catch(UnknownHostException e) {
+        } catch (UnknownHostException e) {
             e.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
-            if(socket != null) {
+        } finally {
+            if (socket != null) {
                 try {
                     socket.close();
-                }
-                catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }

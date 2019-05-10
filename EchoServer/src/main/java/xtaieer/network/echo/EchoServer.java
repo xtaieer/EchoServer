@@ -15,7 +15,7 @@ public class EchoServer {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(PORT);
-            for(;;) {
+            for (;;) {
                 Socket socket = serverSocket.accept();
                 InputStream inputStream = new BufferedInputStream(socket.getInputStream());
                 OutputStream outputStream = new BufferedOutputStream(socket.getOutputStream());
@@ -24,7 +24,7 @@ public class EchoServer {
                     List<Byte> readBytes = new ArrayList<>();
                     while ((b = inputStream.read()) != -1) {
                         readBytes.add((byte) b);
-                        if ((char) b == '&') {
+                        if ((char) b == '\n') {
                             for (int i = 0; i < readBytes.size(); i++) {
                                 outputStream.write(readBytes.get(i));
                             }
@@ -32,31 +32,25 @@ public class EchoServer {
                             readBytes.clear();
                         }
                     }
-                }
-                catch(SocketException e) {
+                } catch (SocketException e) {
                     e.printStackTrace();
                 } finally {
-                    if(socket != null) {
+                    if (socket != null) {
                         try {
                             socket.close();
-                        }
-                        catch (IOException e) {
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-
                 }
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             if (serverSocket != null) {
                 try {
                     serverSocket.close();
-                }
-                catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
